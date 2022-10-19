@@ -1,0 +1,6 @@
+PROJECT_NAME=lost_and_found_ttpu_bot
+DJANGO_SETTINGS_MODULE=config.settings.production
+SECRET_KEY=$ut@th+#kd#1@tp6u_zr7s7(a63xwzo!ivmltrqtc#@t%+c0#i
+DEBUG=True                      # it is temporary
+SERVER_IP=null
+TELEGRAM_BOT_TOKEN=5429704089:AAH5xjz2MxdaL-7GeSLla6jU2t1AqJwdQAU

@@ -1,0 +1,47 @@
+version: '3'
+
+volumes:
+  local_postgres_data: {}
+  local_postgres_data_backups: {}
+
+services:
+  django: &django
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    image: lost_and_found_ttpu_bot_django
+    container_name: django
+    depends_on:
+      - ngrok
+      - postgres
+    volumes:
+      - .:/app:cached
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
+    ports:
+      - "8000:8000"
+    command: /start
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/local/postgres/Dockerfile
+    image: lost_and_found_ttpu_bot_postgres
+    container_name: postgres
+    volumes:
+      - local_postgres_data:/var/lib/postgresql/data:cached
+      - local_postgres_data_backups:/backups:cached
+    env_file:
+      - ./.envs/.local/.postgres
+
+  ngrok:
+    build:
+      context: .
+      dockerfile: ./compose/local/ngrok/Dockerfile
+    image: lost_and_found_ttpu_bot_ngrok
+    container_name: ngrok
+    env_file:
+      - .envs/.local/.ngrok
+    ports:
+      - "4551:4551"

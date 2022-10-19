@@ -1,0 +1,3 @@
+web_addr: 0.0.0.0:8000
+authtoken: 2FwGHDrqlDclmVZRcdDTQocJ1mq_3jVZzYjNCknesv2qxwQzS
+log: stdout

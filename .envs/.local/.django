@@ -1,0 +1,5 @@
+PROJECT_NAME=lost_and_found_ttpu_bot
+DJANGO_SETTINGS_MODULE=config.settings.local
+SECRET_KEY=qwerty
+DEBUG=True
+TELEGRAM_BOT_TOKEN=5497932550:AAGBpWGUMKg6hjtzhclpqxx61kGdJH3J0lQ

@@ -1,0 +1,4 @@
+AUTH_TOKEN=2FwGHDrqlDclmVZRcdDTQocJ1mq_3jVZzYjNCknesv2qxwQzS
+DEBUG=1
+DOMAIN=django
+PORT=8000

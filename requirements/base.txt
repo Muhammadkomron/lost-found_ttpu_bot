@@ -1,0 +1,31 @@
+
+# Python
+whitenoise==5.3.0 # https://pypi.org/project/whitenoise/
+pre-commit==2.15.0 # https://pre-commit.com/
+Pillow==9.2.0 # https://pypi.org/project/Pillow/
+pytz==2022.2.1 # https://pypi.org/project/pytz/
+Fiona==1.8.21 # https://pypi.org/project/Fiona/
+Shapely==1.8.4 # https://pypi.org/project/Shapely/
+
+
+# Django
+Django==4.1.1
+django-extensions==3.1.5 # https://django-extensions.readthedocs.io/en/latest/installation_instructions.html
+django-cors-headers==3.10.0 # https://pypi.org/project/django-cors-headers/
+django-extra-fields==3.0.2 # https://pypi.org/project/django-extra-fields/
+django-geojson==3.2.1 # https://pypi.org/project/django-geojson/
+
+
+# Rest Framework
+djangorestframework==3.14.0 # https://www.django-rest-framework.org/
+
+
+# Postgres
+psycopg2-binary==2.9.2 # https://pypi.org/project/psycopg2-binary/
+
+
+# Telegram
+pyTelegramBotAPI==4.5.1 # https://pypi.org/project/pyTelegramBotAPI/
+Pyrogram==2.0.57 # https://pypi.org/project/Pyrogram/
+TgCrypto==1.2.3 # https://pypi.org/project/TgCrypto/
+python-telegram-bot-pagination==0.0.2 # https://pypi.org/project/python-telegram-bot-pagination/

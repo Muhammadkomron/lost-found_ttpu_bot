@@ -1,0 +1,5 @@
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=lost_and_found_ttpu_bot_database
+POSTGRES_USER=lost_and_found_ttpu_bot_user
+POSTGRES_PASSWORD=&jt_+i#4&0w&$z%@#@ka8i_cp=@k086zsqpi3l_!l0jp0eo1m7

@@ -1,0 +1,52 @@
+version: '3'
+
+volumes:
+  static_volume:
+  media_volume:
+  local_postgres_data: { }
+  local_postgres_data_backups: { }
+
+services:
+  django: &django
+    build:
+      context: .
+      dockerfile: ./compose/production/django/Dockerfile
+    image: lost_and_found_ttpu_bot_django
+    container_name: django
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app:cached
+      - static_volume:/home/app/web/src/static
+      - media_volume:/home/app/web/src/media
+    env_file:
+      - ./.envs/.production/.django
+      - ./.envs/.production/.postgres
+    ports:
+      - "8000:8000"
+    command: /start
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+    image: lost_and_found_ttpu_bot_postgres
+    container_name: postgres
+    volumes:
+      - local_postgres_data:/var/lib/postgresql/data:cached
+      - local_postgres_data_backups:/backups:cached
+    env_file:
+      - ./.envs/.production/.postgres
+
+  ngrok:
+    build:
+      context: .
+      dockerfile: ./compose/production/ngrok/Dockerfile
+    image: lost_and_found_ttpu_bot_ngrok
+    container_name: ngrok
+    env_file:
+      - .envs/.production/.ngrok
+    ports:
+      - "4551:4551"
+    depends_on:
+      - django
