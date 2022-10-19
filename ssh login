@@ -1,2 +1,2 @@
-ssh -i .pem ubuntu@
+ssh -i lost_and_found_ttpu_bot.pem root@64.227.23.42
 # 2F7VZnxJbr6J2byVLtzFBuV8Xhg_42pXd5frAyHa8sqhjYczR zapaska
