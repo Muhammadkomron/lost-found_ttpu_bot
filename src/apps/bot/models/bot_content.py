@@ -10,6 +10,36 @@ class BotContent(models.Model):
         blank=True,
         null=True,
     )
+    post_item = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+    )
+    post_item_submit = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+    )
+    post_item_cancel = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+    )
+    item_list = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+    )
+    item_list_exception = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+    )
+    item_list_cancel = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+    )
     profile = models.CharField(
         max_length=100,
         blank=True,
@@ -56,6 +86,30 @@ class BotContent(models.Model):
         null=True,
     )
     welcome_text = models.TextField(
+        blank=True,
+        null=True,
+    )
+    item_title_text = models.TextField(
+        blank=True,
+        null=True,
+    )
+    item_location_text = models.TextField(
+        blank=True,
+        null=True,
+    )
+    item_date_text = models.TextField(
+        blank=True,
+        null=True,
+    )
+    item_date_exception_text = models.TextField(
+        blank=True,
+        null=True,
+    )
+    item_photo_text = models.TextField(
+        blank=True,
+        null=True,
+    )
+    item_create_success_text = models.TextField(
         blank=True,
         null=True,
     )

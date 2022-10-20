@@ -56,5 +56,25 @@ def is_registered_phone_number(chat_id):
     return BotUser.objects.is_registered_phone_number(chat_id)
 
 
+def is_going_to_enter_item_title(chat_id):
+    return BotUser.objects.is_going_to_enter_item_title(chat_id)
+
+
+def is_going_to_enter_item_location(chat_id):
+    return BotUser.objects.is_going_to_enter_item_location(chat_id)
+
+
+def is_going_to_enter_item_date(chat_id):
+    return BotUser.objects.is_going_to_enter_item_date(chat_id)
+
+
+def is_going_to_enter_item_photo(chat_id):
+    return BotUser.objects.is_going_to_enter_item_photo(chat_id)
+
+
 def settings_text_handler():
     return BotContent.objects.settings()
+
+
+def post_item_text_handler():
+    return BotContent.objects.post_item()

@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.conf import settings
 from telebot.types import ReplyKeyboardRemove
 
@@ -12,6 +13,11 @@ from src.apps.bot.services.bot import (
     bot_user_update_massage_id,
     bot_user_updating_phone_number,
     bot_user_update_phone_number,
+    bot_user_entering_post_title,
+    bot_user_entering_post_location,
+    bot_user_entering_post_date,
+    bot_user_entering_post_photo,
+    bot_user_post_complete,
 )
 from src.apps.bot.utils import (
     language_keyboard,
@@ -28,7 +34,7 @@ def start(bot, chat_id, username):
         username,
     )
     keyboard = language_keyboard()
-    text = "Tilni tanlang / Выберите язык"
+    text = "Tilni tanlang / Выберите язык / Choose language"
     response = bot.send_message(
         text=text,
         chat_id=chat_id,
@@ -308,6 +314,74 @@ def update_settings_language(bot, language, chat_id):
     )
     text = content.settings_language_text
     keyboard = settings_keyboard(
+        content,
+    )
+    bot.send_message(
+        text=text,
+        chat_id=chat_id,
+        reply_markup=keyboard,
+        parse_mode=settings.DEFAULT_PARSE_MODE,
+    )
+
+
+def post_item(bot, chat_id):
+    _, content = bot_user_entering_post_title(chat_id)
+    text = content.item_title_text
+    bot.send_message(
+        text=text,
+        chat_id=chat_id,
+        parse_mode=settings.DEFAULT_PARSE_MODE,
+    )
+
+
+def post_item_title(bot, message, chat_id):
+    _, content = bot_user_entering_post_location(chat_id, message)
+    text = content.item_location_text
+    bot.send_message(
+        text=text,
+        chat_id=chat_id,
+        parse_mode=settings.DEFAULT_PARSE_MODE,
+    )
+
+
+def post_item_location(bot, message, chat_id):
+    _, content = bot_user_entering_post_date(chat_id, message)
+    text = content.item_date_text
+    bot.send_message(
+        text=text,
+        chat_id=chat_id,
+        parse_mode=settings.DEFAULT_PARSE_MODE,
+    )
+
+
+def post_item_date(bot, message, chat_id):
+    try:
+        date = datetime.strptime(message, "%d-%m-%Y").date()
+        _, content = bot_user_entering_post_photo(chat_id, date)
+        text = content.item_photo_text
+        bot.send_message(
+            text=text,
+            chat_id=chat_id,
+            parse_mode=settings.DEFAULT_PARSE_MODE,
+        )
+    except ValueError:
+        print("Value error")
+        _, content = bot_user_change_state(chat_id, updating_date=True)
+        text = content.item_date_exception_text
+        bot.send_message(
+            text=text,
+            chat_id=chat_id,
+            parse_mode=settings.DEFAULT_PARSE_MODE,
+        )
+
+
+def post_item_photo(bot, file_id, chat_id):
+    file_info = bot.get_file(file_id)
+    file_extension = file_info.file_path.split(".")[-1]
+    download_file = bot.download_file(file_info.file_path)
+    _, content = bot_user_post_complete(chat_id, download_file, file_extension)
+    text = content.item_create_success_text
+    keyboard = menu_keyboard(
         content,
     )
     bot.send_message(

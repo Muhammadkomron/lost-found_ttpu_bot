@@ -22,8 +22,12 @@ def language_keyboard():
 
 def menu_keyboard(content: BotContent):
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    key_post_item = types.KeyboardButton(content.post_item)
+    key_item_list = types.KeyboardButton(content.item_list)
     key_profile = types.KeyboardButton(content.profile)
     key_settings = types.KeyboardButton(content.settings)
+    keyboard.add(key_post_item)
+    keyboard.add(key_item_list)
     keyboard.add(key_profile, key_settings)
     return keyboard
 

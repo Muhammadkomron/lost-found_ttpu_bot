@@ -1,13 +1,21 @@
+import uuid
 from django.contrib.auth.models import User
+from django.core.files import File
+from django.core.files.base import ContentFile
 
 from src.apps.bot.models.bot_content import BotContent
 from src.apps.bot.models.bot_user import BotUser
+from src.apps.bot.models.item import Item
+from src.apps.common.models.common import StatusChoices
 
 
 def bot_user_create_or_update(chat_id, username):
     data = dict(
         username=username,
-        is_going_to_write_message=False,
+        is_going_to_enter_item_title=False,
+        is_going_to_enter_item_location=False,
+        is_going_to_enter_item_date=False,
+        is_going_to_enter_item_photo=False,
         is_going_to_edit_first_name=False,
         is_going_to_edit_last_name=False,
         is_going_to_edit_phone_number=False,
@@ -45,12 +53,16 @@ def bot_user_update_language(chat_id, language):
     return bot_user_obj, content
 
 
-def bot_user_change_state(chat_id, updating_language=False):
+def bot_user_change_state(chat_id, updating_language=False, updating_date=False):
     bot_user_obj = BotUser.objects.get_user(chat_id)
     bot_user_obj.is_going_to_write_message = False
     bot_user_obj.is_going_to_edit_first_name = False
     bot_user_obj.is_going_to_edit_last_name = False
     bot_user_obj.is_going_to_edit_phone_number = False
+    bot_user_obj.is_going_to_enter_item_title = False
+    bot_user_obj.is_going_to_enter_item_location = False
+    bot_user_obj.is_going_to_enter_item_date = updating_date
+    bot_user_obj.is_going_to_enter_item_photo = False
     bot_user_obj.is_going_to_edit_settings_language = updating_language
     bot_user_obj.save()
     content = BotContent.objects.fetch_by_language(
@@ -135,10 +147,72 @@ def user_change_state(chat_id):
     return bot_user_obj
 
 
-def user_writing_message(chat_id):
+def bot_user_entering_post_title(chat_id):
     bot_user_obj = BotUser.objects.get_user(chat_id)
-    bot_user_obj.is_going_to_write_message = True
+    bot_user_obj.is_going_to_enter_item_title = True
+    bot_user_obj.is_going_to_enter_item_location = False
+    bot_user_obj.is_going_to_enter_item_date = False
+    bot_user_obj.is_going_to_enter_item_photo = False
     bot_user_obj.save()
+    content = BotContent.objects.fetch_by_language(
+        bot_user_obj.language_choice,
+    )
+    return bot_user_obj, content
+
+
+def bot_user_entering_post_location(chat_id, message):
+    bot_user_obj = BotUser.objects.get_user(chat_id)
+    bot_user_obj.is_going_to_enter_item_location = True
+    bot_user_obj.is_going_to_enter_item_title = False
+    bot_user_obj.save()
+    Item.objects.create(
+        title=message,
+        user=bot_user_obj,
+    )
+    content = BotContent.objects.fetch_by_language(
+        bot_user_obj.language_choice,
+    )
+    return bot_user_obj, content
+
+
+def bot_user_entering_post_date(chat_id, message):
+    bot_user_obj = BotUser.objects.get_user(chat_id)
+    bot_user_obj.is_going_to_enter_item_date = True
+    bot_user_obj.is_going_to_enter_item_location = False
+    bot_user_obj.save()
+    bot_user_item_obj = bot_user_obj.posts.first()
+    bot_user_item_obj.location = message
+    bot_user_item_obj.save()
+    content = BotContent.objects.fetch_by_language(
+        bot_user_obj.language_choice,
+    )
+    return bot_user_obj, content
+
+
+def bot_user_entering_post_photo(chat_id, message):
+    bot_user_obj = BotUser.objects.get_user(chat_id)
+    bot_user_obj.is_going_to_enter_item_photo = True
+    bot_user_obj.is_going_to_enter_item_date = False
+    bot_user_obj.save()
+    bot_user_item_obj = bot_user_obj.posts.first()
+    bot_user_item_obj.found_date = message
+    bot_user_item_obj.save()
+    content = BotContent.objects.fetch_by_language(
+        bot_user_obj.language_choice,
+    )
+    return bot_user_obj, content
+
+
+def bot_user_post_complete(chat_id, photo, extension):
+    bot_user_obj = BotUser.objects.get_user(chat_id)
+    bot_user_obj.is_going_to_enter_item_photo = False
+    bot_user_obj.save()
+    bot_user_item_obj = bot_user_obj.posts.first()
+    bot_user_item_obj.image = File(
+        ContentFile(photo, f"{uuid.uuid4()}.{extension}"),
+    )
+    bot_user_item_obj.status = StatusChoices.PROCESSING
+    bot_user_item_obj.save()
     content = BotContent.objects.fetch_by_language(
         bot_user_obj.language_choice,
     )

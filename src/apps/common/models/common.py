@@ -7,11 +7,6 @@ class LanguageChoice(models.TextChoices):
     UZBEK = "🇺🇿 O'zbekcha", "uz"
 
 
-class PostStatusChoice(models.IntegerChoices):
-    START = 1, "Start"
-    FINISH = 2, "Finish"
-
-
 class StatusChoices(models.IntegerChoices):
     CREATED = 1, "Created"
     PROCESSING = 2, "Processing"

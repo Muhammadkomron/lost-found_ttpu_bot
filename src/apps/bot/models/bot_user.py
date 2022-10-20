@@ -47,7 +47,16 @@ class BotUser(BaseModel):
     is_going_to_edit_settings_language = models.BooleanField(
         default=False,
     )
-    is_going_to_write_message = models.BooleanField(
+    is_going_to_enter_item_title = models.BooleanField(
+        default=False,
+    )
+    is_going_to_enter_item_location = models.BooleanField(
+        default=False,
+    )
+    is_going_to_enter_item_date = models.BooleanField(
+        default=False,
+    )
+    is_going_to_enter_item_photo = models.BooleanField(
         default=False,
     )
     is_going_to_edit_first_name = models.BooleanField(

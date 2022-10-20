@@ -21,12 +21,18 @@ from src.apps.bot.sender import (
     settings_language,
     settings_back_to_menu,
     update_settings_language,
+    post_item,
+    post_item_title,
+    post_item_location,
+    post_item_date,
+    post_item_photo,
 )
 from src.apps.bot.services.bot import login
 from src.apps.bot.services.message import (
     language_text_handler,
     profile_text_handler,
     settings_text_handler,
+    post_item_text_handler,
     settings_language_by_text,
     settings_back_to_menu_by_text,
     update_settings_language_by_text,
@@ -36,6 +42,10 @@ from src.apps.bot.services.message import (
     is_registered_first_name,
     is_registered_last_name,
     is_registered_phone_number,
+    is_going_to_enter_item_title,
+    is_going_to_enter_item_location,
+    is_going_to_enter_item_date,
+    is_going_to_enter_item_photo,
 )
 
 bot = TeleBot(settings.TOKEN)
@@ -290,5 +300,79 @@ def message_handler(message):
     update_settings_language(
         bot,
         message.text,
+        message.chat.id,
+    )
+
+
+@bot.message_handler(
+    content_types=["text"],
+    func=lambda message:
+    login(message.from_user.username).__eq__(False)
+    and
+    message.text in post_item_text_handler(),
+)
+def message_handler(message):
+    post_item(
+        bot,
+        message.chat.id,
+    )
+
+
+@bot.message_handler(
+    content_types=["text"],
+    func=lambda message:
+    login(message.from_user.username).__eq__(False)
+    and
+    is_going_to_enter_item_title(message.chat.id),
+)
+def message_handler(message):
+    post_item_title(
+        bot,
+        message.text,
+        message.chat.id,
+    )
+
+
+@bot.message_handler(
+    content_types=["text"],
+    func=lambda message:
+    login(message.from_user.username).__eq__(False)
+    and
+    is_going_to_enter_item_location(message.chat.id),
+)
+def message_handler(message):
+    post_item_location(
+        bot,
+        message.text,
+        message.chat.id,
+    )
+
+
+@bot.message_handler(
+    content_types=["text"],
+    func=lambda message:
+    login(message.from_user.username).__eq__(False)
+    and
+    is_going_to_enter_item_date(message.chat.id),
+)
+def message_handler(message):
+    post_item_date(
+        bot,
+        message.text,
+        message.chat.id,
+    )
+
+
+@bot.message_handler(
+    content_types=["photo"],
+    func=lambda message:
+    login(message.from_user.username).__eq__(False)
+    and
+    is_going_to_enter_item_photo(message.chat.id),
+)
+def message_handler(message):
+    post_item_photo(
+        bot,
+        message.photo[-1].file_id,
         message.chat.id,
     )

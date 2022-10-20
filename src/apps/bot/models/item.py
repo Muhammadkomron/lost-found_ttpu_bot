@@ -5,10 +5,22 @@ from src.apps.common.models.common import BaseModel, StatusChoices
 
 
 class Item(BaseModel):
-    title = models.TextField()
-    location = models.TextField()
-    found_date = models.DateField()
-    image = models.ImageField()
+    title = models.TextField(
+        blank=True,
+        null=True,
+    )
+    location = models.TextField(
+        blank=True,
+        null=True,
+    )
+    found_date = models.DateField(
+        blank=True,
+        null=True,
+    )
+    image = models.ImageField(
+        blank=True,
+        null=True,
+    )
     user = models.ForeignKey(
         "bot.BotUser",
         on_delete=models.CASCADE,
@@ -18,7 +30,10 @@ class Item(BaseModel):
         choices=StatusChoices.choices,
         default=StatusChoices.CREATED,
     )
-    message_id = models.IntegerField()
+    message_id = models.IntegerField(
+        blank=True,
+        null=True,
+    )
 
     objects = ItemManager()
 

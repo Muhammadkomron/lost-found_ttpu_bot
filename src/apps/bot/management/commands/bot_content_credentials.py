@@ -1,25 +1,14 @@
 
+
 bot_contents = [
     {
         "language": "🇷🇺 Русский",
-        # "bot_url": "https://t.me/my_django_test_bot",
-        # "user_ids": "🗂 Мои ID",
-        # "user_ids_cancel": "⬅️ Назад в меню",
-        # "increase_chance": "📈 Увеличить шанс",
-        # "increase_chance_share": "✅ Поделиться ботом",
-        # "channel_join": "Artel matbuot xizmati",
-        # "channel_check": "✅ Проверить",
-        # "channel_check_success_text": """📌 Поздравляем, вы стали участником конкурса! Ваш ID {}.
-# Не потеряйте этот номер.
-# Также вы можете увеличить ваш шанс на победу или же ознакомитесь условиями конкурса:""",
-#         "channel_check_fail_text": "Пожалуйта подпишитесь на канал для успешной проверки.",
-#         "user_ids_text": "У вас есть {} идентификационных номера –",
-#         "increase_chance_text": """📌 Чтобы увеличить ваш шанс на победу, вам нужно приобрести как можно больше ID номеров.
-# Для этого отправьте приглашение друзьям.
-# Когда ваши друзья участвуют в конкурсе по вашему приглашению, вы получаете +1 ID номер для каждого друга.
-# Вы можете узнать количество ваших ID номеров в меню.""",
-#         "increase_chance_exception_text": "Пожалуйта сначала подпишитесь на канал и нажмите на кнопку ”✅ Проверить”.",
-#         "user_ids_exception_text": "Пожалуйта сначала подпишитесь на канал и нажмите на кнопку ”✅ Проверить”.",
+        "post_item": "📨 Разместите находку",
+        "post_item_submit": "✍️ Отправить",
+        "post_item_cancel": "❌ Отменить",
+        "item_list": "🗄 Вещи, которые я нашел",
+        "item_list_exception": "🔓 Вы еще ничего не нашли",
+        "item_list_cancel": "⬅️ Назад в меню",
         "profile": "📋 Мой профиль",
         "settings": "⚙️ Настройки",
         "settings_language": "🔄 Изменить язык",
@@ -29,7 +18,13 @@ bot_contents = [
         "phone_number": "📝 Изменить номер телефона",
         "share_phone_number": "☎️ Поделиться контактом",
         "profile_cancel": "⬅️ Назад в меню",
-        "welcome_text": "Добро пожаловать на конкурс пресс-службы Artel!",
+        "welcome_text": "Добро пожаловать на бот Университета Турина!",
+        "item_title_text": "🖊 Введите название того, что вы нашли",
+        "item_location_text": "🖊 Укажите, где вы его нашли",
+        "item_date_text": "🖊 Введите дату, когда вы его нашли. Формат даты должен быть дд-мм-гггг.",
+        "item_date_exception_text": "🖊 Пожалуйста, вводите дату правильно. Формат даты должен быть дд-мм-гггг.",
+        "item_photo_text": "🖊 Загрузите фото того, что вы нашли",
+        "item_create_success_text": "✅ Успешно сохранено",
         "menu_text": "Меню",
         "first_name_text": "📎 Имя",
         "last_name_text": "📎 Фамилия",
@@ -44,24 +39,12 @@ bot_contents = [
     },
     {
         "language": "🇺🇿 O'zbekcha",
-        # "bot_url": "https://t.me/my_django_test_bot",
-        # "user_ids": "🗂 Mening IDlarim",
-        # "user_ids_cancel": "⬅️ Menyuga qaytish",
-        # "increase_chance": "📈 Tanlovda omadni oshirish",
-        # "increase_chance_share": "✅ Botni ulashish",
-        # "channel_join": "Artel matbuot xizmati",
-        # "channel_check": "✅ Tekshirish",
-        # "channel_check_success_text": """📌 Tabriklaymiz! Siz tanlovimiz ishtirokchisiga aylandingiz! Ishtirokchi IDingiz {}.
-# ID raqamingizni saqlab qo’ying.
-# Tanlovda yutish imkoniyatingizni oshiring yoki tanlov shartlari bilan tanishing:""",
-#         "channel_check_fail_text": "Tekshiruvdan muvaffaqiyatli o'tish uchun kanalga obuna bo'ling.",
-#         "user_ids_text": "Sizda {} ta ID raqami mavjud –",
-#         "increase_chance_text": """📌 Tanlovda o’z ID raqamingizni ko’paytirish orqali yutish imkoniyatini oshiring.
-# Buning uchun shaxsiy havolangizni do’stlaringizga yuboring.
-# Do’stlaringiz taklifingiz orqali tanlovda ishtirok etganida, har bir do’stingiz uchun sizga +1 ta ID raqami beriladi.
-# ID raqamlaringiz soni bilan Menyuda tanishishingiz mumkin.""",
-#         "increase_chance_exception_text": "Iltimos, avval kanalga obuna bo'ling va ”✅ Tekshirish” tugmasini bosing.",
-#         "user_ids_exception_text": "Iltimos, avval kanalga obuna bo'ling va ”✅ Tekshirish” tugmasini bosing.",
+        "post_item": "📨 Topilmani joylash",
+        "post_item_submit": "✍️ Yuborish",
+        "post_item_cancel": "❌ Bekor qilish",
+        "item_list": "🗄 Men topkan narsalar",
+        "item_list_exception": "🔓 Siz hali hech narsa topmadingiz",
+        "item_list_cancel": "⬅️ Menyuga qaytish",
         "profile": "📋 Mening profilim",
         "settings": "⚙️ Sozlamalar",
         "settings_language": "🔄 Tilni o'zgartirish",
@@ -71,7 +54,13 @@ bot_contents = [
         "phone_number": "📝 Telefon raqamini o'zgartirish",
         "share_phone_number": "☎️ Kontaktni ulashish",
         "profile_cancel": "⬅️ Menyuga qaytish",
-        "welcome_text": "Artel matbuot xizmati tanlovlariga xush kelibsiz!",
+        "welcome_text": "Turin Universiteti botiga xush kelibsiz!",
+        "item_title_text": "🖊 Topkan narsangizni nomini kiriting",
+        "item_location_text": "🖊 Qayerdan topkaningizni kiriting",
+        "item_date_text": "🖊 Qachon topkaningizni sanasini kiriting. Sana formati dd-mm-yyyy bo'lishi kerak.",
+        "item_date_exception_text": "🖊 Iltimos, sanani to'g'ri kiriting. Sana formati formati dd-mm-yyyy bo'lishi kerak.",
+        "item_photo_text": "🖊 Topkan narsangizni suratini yuklang",
+        "item_create_success_text": "✅ Muvaffaqiyatli saqlandi",
         "menu_text": "Menu",
         "first_name_text": "📎 Ism",
         "last_name_text": "📎 Familiya",

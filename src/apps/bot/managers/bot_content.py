@@ -38,6 +38,12 @@ class BotContentManager(BaseManager):
             flat=True,
         )
 
+    def post_item(self):
+        return self.values_list(
+            "post_item",
+            flat=True,
+        )
+
     def fetch_by_language(self, language):
         return self.filter(
             language=language,

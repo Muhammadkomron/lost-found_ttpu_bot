@@ -65,8 +65,26 @@ class BotUserManager(BaseManager):
             is_registered_phone_number=False,
         ).exists()
 
-    def is_registered_location(self, chat_id):
+    def is_going_to_enter_item_title(self, chat_id):
         return self.filter(
             chat_id=chat_id,
-            is_registered_location=False,
+            is_going_to_enter_item_title=True,
+        ).exists()
+
+    def is_going_to_enter_item_location(self, chat_id):
+        return self.filter(
+            chat_id=chat_id,
+            is_going_to_enter_item_location=True,
+        ).exists()
+
+    def is_going_to_enter_item_date(self, chat_id):
+        return self.filter(
+            chat_id=chat_id,
+            is_going_to_enter_item_date=True,
+        ).exists()
+
+    def is_going_to_enter_item_photo(self, chat_id):
+        return self.filter(
+            chat_id=chat_id,
+            is_going_to_enter_item_photo=True,
         ).exists()
