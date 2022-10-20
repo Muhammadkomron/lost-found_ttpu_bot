@@ -390,3 +390,17 @@ def post_item_photo(bot, file_id, chat_id):
         reply_markup=keyboard,
         parse_mode=settings.DEFAULT_PARSE_MODE,
     )
+
+
+def item_list(bot, chat_id):
+    _, content = bot_user_change_state(chat_id)
+    text = content.item_create_success_text
+    keyboard = menu_keyboard(
+        content,
+    )
+    bot.send_message(
+        text=text,
+        chat_id=chat_id,
+        reply_markup=keyboard,
+        parse_mode=settings.DEFAULT_PARSE_MODE,
+    )

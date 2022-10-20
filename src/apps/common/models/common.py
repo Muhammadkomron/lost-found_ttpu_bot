@@ -9,8 +9,8 @@ class LanguageChoice(models.TextChoices):
 
 class StatusChoices(models.IntegerChoices):
     CREATED = 1, "Created"
-    PROCESSING = 2, "Processing"
-    PROCESSING_FINISHED = 3, "Processing finished"
+    PUBLISHED = 2, "Published"
+    DELIVERED = 3, "Delivered"
     CANCELLED = 4, "Cancelled"
     BLOCKED = 5, "Blocked"
 

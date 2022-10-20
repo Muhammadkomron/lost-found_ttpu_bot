@@ -78,3 +78,7 @@ def settings_text_handler():
 
 def post_item_text_handler():
     return BotContent.objects.post_item()
+
+
+def item_list_text_handler():
+    return BotContent.objects.item_list()

@@ -6,7 +6,6 @@ from django.core.files.base import ContentFile
 from src.apps.bot.models.bot_content import BotContent
 from src.apps.bot.models.bot_user import BotUser
 from src.apps.bot.models.item import Item
-from src.apps.common.models.common import StatusChoices
 
 
 def bot_user_create_or_update(chat_id, username):
@@ -211,7 +210,6 @@ def bot_user_post_complete(chat_id, photo, extension):
     bot_user_item_obj.image = File(
         ContentFile(photo, f"{uuid.uuid4()}.{extension}"),
     )
-    bot_user_item_obj.status = StatusChoices.PROCESSING
     bot_user_item_obj.save()
     content = BotContent.objects.fetch_by_language(
         bot_user_obj.language_choice,

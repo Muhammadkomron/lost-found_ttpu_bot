@@ -26,6 +26,7 @@ from src.apps.bot.sender import (
     post_item_location,
     post_item_date,
     post_item_photo,
+    item_list,
 )
 from src.apps.bot.services.bot import login
 from src.apps.bot.services.message import (
@@ -33,6 +34,7 @@ from src.apps.bot.services.message import (
     profile_text_handler,
     settings_text_handler,
     post_item_text_handler,
+    item_list_text_handler,
     settings_language_by_text,
     settings_back_to_menu_by_text,
     update_settings_language_by_text,
@@ -374,5 +376,19 @@ def message_handler(message):
     post_item_photo(
         bot,
         message.photo[-1].file_id,
+        message.chat.id,
+    )
+
+
+@bot.message_handler(
+    content_types=["text"],
+    func=lambda message:
+    login(message.from_user.username).__eq__(False)
+    and
+    message.text in item_list_text_handler(),
+)
+def message_handler(message):
+    item_list(
+        bot,
         message.chat.id,
     )
