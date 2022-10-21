@@ -25,6 +25,7 @@ from src.apps.bot.utils import (
     profile_keyboard,
     contact_keyboard,
     settings_keyboard,
+    item_list_keyboard,
 )
 
 
@@ -394,13 +395,23 @@ def post_item_photo(bot, file_id, chat_id):
 
 def item_list(bot, chat_id):
     _, content = bot_user_change_state(chat_id)
-    text = content.item_create_success_text
-    keyboard = menu_keyboard(
-        content,
-    )
+    message_obj, length, page = get_message_obj_length_page()
+    if length > 0:
+        text = f"""Message number: {message_obj.message_number}\n\n"""
+        text += f"""<i>{message_obj.message}</i>\n"""
+        paginator = item_list_keyboard(content, page_count=length, page=page)
+        data = dict(
+            text=text,
+            reply_markup=paginator.markup,
+        )
+    else:
+        keyboard = menu_keyboard(content)
+        data = dict(
+            text=content.item_list_exception,
+            reply_markup=keyboard,
+        )
     bot.send_message(
-        text=text,
         chat_id=chat_id,
-        reply_markup=keyboard,
         parse_mode=settings.DEFAULT_PARSE_MODE,
+        **data,
     )

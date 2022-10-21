@@ -1,6 +1,7 @@
 from telebot import types
 
 from src.apps.bot.models.bot_content import BotContent
+from telegram_bot_pagination import InlineKeyboardPaginator
 
 
 def language_keyboard():
@@ -84,3 +85,13 @@ def settings_keyboard(content: BotContent):
     keyboard.add(key_settings_language)
     keyboard.add(key_back_to_menu)
     return keyboard
+
+
+def item_list_keyboard(content: BotContent, page_count, page=1):
+    paginator = InlineKeyboardPaginator(
+        page_count,
+        current_page=page,
+        data_pattern="item_list#{page}",
+    )
+    paginator.add_after(types.InlineKeyboardButton(content.item_list_cancel, callback_data="item_list_cancel"))
+    return paginator
