@@ -52,7 +52,7 @@ def bot_user_update_language(chat_id, language):
     return bot_user_obj, content
 
 
-def bot_user_change_state(chat_id, updating_language=False, updating_date=False):
+def bot_user_change_state(chat_id, updating_language=False, updating_date=False, updating_photo=False):
     bot_user_obj = BotUser.objects.get_user(chat_id)
     bot_user_obj.is_going_to_write_message = False
     bot_user_obj.is_going_to_edit_first_name = False
@@ -61,7 +61,7 @@ def bot_user_change_state(chat_id, updating_language=False, updating_date=False)
     bot_user_obj.is_going_to_enter_item_title = False
     bot_user_obj.is_going_to_enter_item_location = False
     bot_user_obj.is_going_to_enter_item_date = updating_date
-    bot_user_obj.is_going_to_enter_item_photo = False
+    bot_user_obj.is_going_to_enter_item_photo = updating_photo
     bot_user_obj.is_going_to_edit_settings_language = updating_language
     bot_user_obj.save()
     content = BotContent.objects.fetch_by_language(

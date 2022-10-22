@@ -172,6 +172,10 @@ class BotContent(models.Model):
         blank=True,
         null=True,
     )
+    item_photo_exception_text = models.TextField(
+        blank=True,
+        null=True,
+    )
     item_create_success_text = models.TextField(
         blank=True,
         null=True,

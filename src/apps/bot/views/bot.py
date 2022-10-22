@@ -31,6 +31,7 @@ from src.apps.bot.sender import (
     post_item_location,
     post_item_date,
     post_item_photo,
+    post_item_photo_exception,
     item_list,
     item_list_cancel,
     pending_item_list,
@@ -437,6 +438,20 @@ def message_handler(message):
     post_item_photo(
         bot,
         message.photo[-1].file_id,
+        message.chat.id,
+    )
+
+
+@bot.message_handler(
+    content_types=["document"],
+    func=lambda message:
+    login(message.from_user.username).__eq__(False)
+    and
+    is_going_to_enter_item_photo(message.chat.id),
+)
+def message_handler(message):
+    post_item_photo_exception(
+        bot,
         message.chat.id,
     )
 

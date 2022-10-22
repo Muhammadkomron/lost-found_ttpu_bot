@@ -2,6 +2,7 @@ from datetime import datetime
 from django.conf import settings
 from telebot.types import ReplyKeyboardRemove
 
+from src.apps.bot.models.channel import Channel
 from src.apps.bot.helper import (
     get_message_photo_length_page,
     send_to_channel,
@@ -438,6 +439,12 @@ def post_item(bot, chat_id):
     _, content = bot_user_entering_post_title(chat_id)
     text = content.item_title_text
     bot.send_message(
+        text=content.post_item,
+        chat_id=chat_id,
+        reply_markup=ReplyKeyboardRemove(),
+        parse_mode=settings.DEFAULT_PARSE_MODE,
+    )
+    bot.send_message(
         text=text,
         chat_id=chat_id,
         parse_mode=settings.DEFAULT_PARSE_MODE,
@@ -501,6 +508,19 @@ def post_item_photo(bot, file_id, chat_id):
     )
 
 
+def post_item_photo_exception(bot, chat_id):
+    _, content = bot_user_change_state(
+        chat_id,
+        updating_photo=True,
+    )
+    bot.send_message(
+        text=content.item_photo_exception_text,
+        chat_id=chat_id,
+        reply_markup=keyboard,
+        parse_mode=settings.DEFAULT_PARSE_MODE,
+    )
+
+
 def item_list(bot, chat_id, message_id=None, pk=None):
     _, content = bot_user_change_state(chat_id)
     message, photo, length, page = get_message_photo_length_page(pk)
@@ -508,7 +528,9 @@ def item_list(bot, chat_id, message_id=None, pk=None):
         if message.status == StatusChoices.CREATED:
             text = f"""{content.item_status_created_text}"""
         elif message.status == StatusChoices.PUBLISHED:
+            channel_obj = Channel.objects.first()
             text = f"""{content.item_status_published_text}"""
+            text = text.format(channel_obj.url + "/" + str(message.message_id))
         else:
             text = f"""{content.item_status_delivered_text}"""
         paginator = item_list_keyboard(

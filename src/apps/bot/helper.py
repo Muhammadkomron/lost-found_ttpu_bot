@@ -53,9 +53,11 @@ def send_to_channel(bot, message):
     text = f"""Title: {obj.title}\n"""
     text += f"""Location: {obj.location}\n"""
     text += f"""Date: {obj.found_date}"""
-    bot.send_photo(
+    response = bot.send_photo(
         photo=photo,
         caption=text,
         chat_id=channel_obj.channel_id,
         parse_mode=settings.DEFAULT_PARSE_MODE,
     )
+    obj.message_id = response.message_id
+    obj.save()
