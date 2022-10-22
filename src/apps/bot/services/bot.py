@@ -217,6 +217,13 @@ def bot_user_post_complete(chat_id, photo, extension):
     return bot_user_obj, content
 
 
+def update_item_status(pk, from_status, to_status):
+    obj = Item.objects.get_item_by_pk(pk, from_status)
+    obj.status = to_status
+    obj.save()
+    return obj
+
+
 def login(username):
     check_user = User.objects.filter(
         username=username,

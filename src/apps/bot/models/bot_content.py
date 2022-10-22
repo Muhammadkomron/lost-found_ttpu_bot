@@ -25,17 +25,52 @@ class BotContent(models.Model):
         blank=True,
         null=True,
     )
+    reject = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+    )
+    approve = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+    )
+    block = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+    )
+    taken = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+    )
     item_list = models.CharField(
         max_length=100,
         blank=True,
         null=True,
     )
-    item_list_exception = models.CharField(
+    item_list_cancel = models.CharField(
         max_length=100,
         blank=True,
         null=True,
     )
-    item_list_cancel = models.CharField(
+    pending_item_list = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+    )
+    pending_item_list_cancel = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+    )
+    active_item_list = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+    )
+    active_item_list_cancel = models.CharField(
         max_length=100,
         blank=True,
         null=True,
@@ -86,6 +121,34 @@ class BotContent(models.Model):
         null=True,
     )
     welcome_text = models.TextField(
+        blank=True,
+        null=True,
+    )
+    item_list_exception_text = models.TextField(
+        blank=True,
+        null=True,
+    )
+    active_item_list_exception_text = models.TextField(
+        blank=True,
+        null=True,
+    )
+    pending_item_list_exception_text = models.TextField(
+        blank=True,
+        null=True,
+    )
+    item_status_text = models.TextField(
+        blank=True,
+        null=True,
+    )
+    item_status_created_text = models.TextField(
+        blank=True,
+        null=True,
+    )
+    item_status_published_text = models.TextField(
+        blank=True,
+        null=True,
+    )
+    item_status_delivered_text = models.TextField(
         blank=True,
         null=True,
     )

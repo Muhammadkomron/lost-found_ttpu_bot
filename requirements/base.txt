@@ -3,9 +3,6 @@
 whitenoise==5.3.0 # https://pypi.org/project/whitenoise/
 pre-commit==2.15.0 # https://pre-commit.com/
 Pillow==9.2.0 # https://pypi.org/project/Pillow/
-pytz==2022.2.1 # https://pypi.org/project/pytz/
-Fiona==1.8.21 # https://pypi.org/project/Fiona/
-Shapely==1.8.4 # https://pypi.org/project/Shapely/
 
 
 # Django

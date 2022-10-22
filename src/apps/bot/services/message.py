@@ -82,3 +82,11 @@ def post_item_text_handler():
 
 def item_list_text_handler():
     return BotContent.objects.item_list()
+
+
+def pending_item_list_text_handler():
+    return BotContent.objects.pending_item_list()
+
+
+def active_item_list_text_handler():
+    return BotContent.objects.active_item_list()

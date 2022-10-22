@@ -12,7 +12,8 @@ class StatusChoices(models.IntegerChoices):
     PUBLISHED = 2, "Published"
     DELIVERED = 3, "Delivered"
     CANCELLED = 4, "Cancelled"
-    BLOCKED = 5, "Blocked"
+    REJECTED = 5, "Rejected"
+    BLOCKED = 6, "Blocked"
 
 
 class BaseModel(models.Model):

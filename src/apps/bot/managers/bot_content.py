@@ -50,6 +50,18 @@ class BotContentManager(BaseManager):
             flat=True,
         )
 
+    def pending_item_list(self):
+        return self.values_list(
+            "pending_item_list",
+            flat=True,
+        )
+
+    def active_item_list(self):
+        return self.values_list(
+            "active_item_list",
+            flat=True,
+        )
+
     def fetch_by_language(self, language):
         return self.filter(
             language=language,

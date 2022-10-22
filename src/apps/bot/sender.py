@@ -2,6 +2,10 @@ from datetime import datetime
 from django.conf import settings
 from telebot.types import ReplyKeyboardRemove
 
+from src.apps.bot.helper import (
+    get_message_photo_length_page,
+    send_to_channel,
+)
 from src.apps.bot.services.bot import (
     bot_user_create_or_update,
     bot_user_update_language,
@@ -18,18 +22,42 @@ from src.apps.bot.services.bot import (
     bot_user_entering_post_date,
     bot_user_entering_post_photo,
     bot_user_post_complete,
+    update_item_status,
 )
 from src.apps.bot.utils import (
     language_keyboard,
     menu_keyboard,
+    admin_menu_keyboard,
     profile_keyboard,
     contact_keyboard,
     settings_keyboard,
     item_list_keyboard,
+    pending_item_list_keyboard,
+    active_item_list_keyboard,
 )
+from src.apps.common.models.common import StatusChoices
 
 
 def start(bot, chat_id, username):
+    bot_user_create_or_update(
+        chat_id,
+        username,
+    )
+    keyboard = language_keyboard()
+    text = "Tilni tanlang / Выберите язык / Choose language"
+    response = bot.send_message(
+        text=text,
+        chat_id=chat_id,
+        reply_markup=keyboard,
+        parse_mode=settings.DEFAULT_PARSE_MODE,
+    )
+    bot_user_update_massage_id(
+        chat_id,
+        response.message_id,
+    )
+
+
+def admin(bot, chat_id, username):
     bot_user_create_or_update(
         chat_id,
         username,
@@ -74,8 +102,45 @@ def update_language(bot, language, chat_id):
         )
     else:
         keyboard = menu_keyboard(
-                content,
-            )
+            content,
+        )
+        text = content.welcome_text
+        bot.send_message(
+            text=text,
+            chat_id=chat_id,
+            reply_markup=keyboard,
+            parse_mode=settings.DEFAULT_PARSE_MODE,
+        )
+
+
+def admin_update_language(bot, language, chat_id):
+    user, content = bot_user_update_language(chat_id, language)
+    if not user.is_registered_first_name:
+        bot.send_message(
+            text=content.first_name_helper,
+            chat_id=chat_id,
+            reply_markup=ReplyKeyboardRemove(),
+            parse_mode=settings.DEFAULT_PARSE_MODE,
+        )
+    elif not user.is_registered_last_name:
+        bot.send_message(
+            text=content.last_name_helper,
+            chat_id=chat_id,
+            reply_markup=ReplyKeyboardRemove(),
+            parse_mode=settings.DEFAULT_PARSE_MODE,
+        )
+    elif not user.is_registered_phone_number:
+        keyboard = contact_keyboard(content)
+        bot.send_message(
+            text=content.phone_number_helper,
+            chat_id=chat_id,
+            reply_markup=keyboard,
+            parse_mode=settings.DEFAULT_PARSE_MODE,
+        )
+    else:
+        keyboard = admin_menu_keyboard(
+            content,
+        )
         text = content.welcome_text
         bot.send_message(
             text=text,
@@ -124,6 +189,20 @@ def enter_phone_number(bot, message, chat_id):
     )
 
 
+def admin_enter_phone_number(bot, message, chat_id):
+    user, content = bot_user_update_phone_number(message, chat_id)
+    text = content.welcome_text
+    keyboard = admin_menu_keyboard(
+        content,
+    )
+    bot.send_message(
+        text=text,
+        chat_id=chat_id,
+        reply_markup=keyboard,
+        parse_mode=settings.DEFAULT_PARSE_MODE,
+    )
+
+
 def profile(bot, chat_id):
     user, content = bot_user_change_state(chat_id)
     bot.send_message(
@@ -152,6 +231,24 @@ def profile_cancel(bot, chat_id, message_id):
     _, content = bot_user_change_state(chat_id)
     text = content.profile_cancel_text
     keyboard = menu_keyboard(
+        content,
+    )
+    bot.delete_message(
+        chat_id=chat_id,
+        message_id=message_id,
+    )
+    bot.send_message(
+        text=text,
+        chat_id=chat_id,
+        reply_markup=keyboard,
+        parse_mode=settings.DEFAULT_PARSE_MODE,
+    )
+
+
+def admin_profile_cancel(bot, chat_id, message_id):
+    _, content = bot_user_change_state(chat_id)
+    text = content.profile_cancel_text
+    keyboard = admin_menu_keyboard(
         content,
     )
     bot.delete_message(
@@ -308,6 +405,18 @@ def settings_back_to_menu(bot, chat_id):
     )
 
 
+def admin_settings_back_to_menu(bot, chat_id):
+    _, content = bot_user_change_state(chat_id)
+    keyboard = admin_menu_keyboard(content)
+    text = content.settings_back_to_menu
+    bot.send_message(
+        text=text,
+        chat_id=chat_id,
+        reply_markup=keyboard,
+        parse_mode=settings.DEFAULT_PARSE_MODE,
+    )
+
+
 def update_settings_language(bot, language, chat_id):
     _, content = bot_user_update_language(
         chat_id,
@@ -366,7 +475,6 @@ def post_item_date(bot, message, chat_id):
             parse_mode=settings.DEFAULT_PARSE_MODE,
         )
     except ValueError:
-        print("Value error")
         _, content = bot_user_change_state(chat_id, updating_date=True)
         text = content.item_date_exception_text
         bot.send_message(
@@ -393,25 +501,310 @@ def post_item_photo(bot, file_id, chat_id):
     )
 
 
-def item_list(bot, chat_id):
+def item_list(bot, chat_id, message_id=None, pk=None):
     _, content = bot_user_change_state(chat_id)
-    message_obj, length, page = get_message_obj_length_page()
+    message, photo, length, page = get_message_photo_length_page(pk)
     if length > 0:
-        text = f"""Message number: {message_obj.message_number}\n\n"""
-        text += f"""<i>{message_obj.message}</i>\n"""
-        paginator = item_list_keyboard(content, page_count=length, page=page)
-        data = dict(
-            text=text,
+        if message.status == StatusChoices.CREATED:
+            text = f"""{content.item_status_created_text}"""
+        elif message.status == StatusChoices.PUBLISHED:
+            text = f"""{content.item_status_published_text}"""
+        else:
+            text = f"""{content.item_status_delivered_text}"""
+        paginator = item_list_keyboard(
+            content,
+            page_count=length,
+            page=page,
+        )
+        if message_id:
+            bot.delete_message(
+                chat_id=chat_id,
+                message_id=message_id,
+            )
+        else:
+            bot.send_message(
+                text=content.item_list,
+                chat_id=chat_id,
+                reply_markup=ReplyKeyboardRemove(),
+                parse_mode=settings.DEFAULT_PARSE_MODE,
+            )
+        bot.send_photo(
+            photo=photo,
+            caption=text,
+            chat_id=chat_id,
             reply_markup=paginator.markup,
+            parse_mode=settings.DEFAULT_PARSE_MODE,
         )
     else:
         keyboard = menu_keyboard(content)
-        data = dict(
-            text=content.item_list_exception,
+        bot.send_message(
+            text=content.item_list_exception_text,
+            chat_id=chat_id,
             reply_markup=keyboard,
+            parse_mode=settings.DEFAULT_PARSE_MODE,
         )
-    bot.send_message(
+
+
+def item_list_cancel(bot, chat_id, message_id):
+    _, content = bot_user_change_state(chat_id)
+    keyboard = menu_keyboard(content)
+    text = content.item_list_cancel
+    bot.delete_message(
         chat_id=chat_id,
-        parse_mode=settings.DEFAULT_PARSE_MODE,
-        **data,
+        message_id=message_id,
     )
+    bot.send_message(
+        text=text,
+        chat_id=chat_id,
+        reply_markup=keyboard,
+        parse_mode=settings.DEFAULT_PARSE_MODE,
+    )
+
+
+def pending_item_list(bot, chat_id, message_id=None, pk=None):
+    _, content = bot_user_change_state(chat_id)
+    message, photo, length, page = get_message_photo_length_page(
+        pk,
+        status=StatusChoices.CREATED,
+    )
+    if length > 0:
+        text = f"""ID: {message.id}\n"""
+        text += f"""Description: {message.title}\n"""
+        text += f"""Date: {message.found_date}\n"""
+        text += f"""Location: {message.location}\n"""
+        paginator = pending_item_list_keyboard(
+            content,
+            page_count=length,
+            page=page,
+        )
+        if message_id:
+            bot.delete_message(
+                chat_id=chat_id,
+                message_id=message_id,
+            )
+        else:
+            bot.send_message(
+                text=content.pending_item_list,
+                chat_id=chat_id,
+                reply_markup=ReplyKeyboardRemove(),
+                parse_mode=settings.DEFAULT_PARSE_MODE,
+            )
+        bot.send_photo(
+            photo=photo,
+            caption=text,
+            chat_id=chat_id,
+            reply_markup=paginator.markup,
+            parse_mode=settings.DEFAULT_PARSE_MODE,
+        )
+    else:
+        keyboard = admin_menu_keyboard(content)
+        bot.send_message(
+            text=content.pending_item_list_exception_text,
+            chat_id=chat_id,
+            reply_markup=keyboard,
+            parse_mode=settings.DEFAULT_PARSE_MODE,
+        )
+
+
+def pending_item_list_cancel(bot, chat_id, message_id):
+    _, content = bot_user_change_state(chat_id)
+    keyboard = admin_menu_keyboard(content)
+    text = content.pending_item_list_cancel
+    bot.delete_message(
+        chat_id=chat_id,
+        message_id=message_id,
+    )
+    bot.send_message(
+        text=text,
+        chat_id=chat_id,
+        reply_markup=keyboard,
+        parse_mode=settings.DEFAULT_PARSE_MODE,
+    )
+
+
+def pending_item_reject(bot, chat_id, message_id, pk):
+    _, content = bot_user_change_state(chat_id)
+    update_item_status(pk, StatusChoices.CREATED, StatusChoices.REJECTED)
+    message, photo, length, page = get_message_photo_length_page(
+        pk - 1,
+        status=StatusChoices.CREATED,
+    )
+    if length > 0:
+        text = f"""ID: {message.id}\n"""
+        text += f"""Description: {message.title}\n"""
+        text += f"""Date: {message.found_date}\n"""
+        text += f"""Location: {message.location}\n"""
+        paginator = pending_item_list_keyboard(
+            content,
+            page_count=length,
+            page=page,
+        )
+        bot.delete_message(
+            chat_id=chat_id,
+            message_id=message_id,
+        )
+        bot.send_photo(
+            photo=photo,
+            caption=text,
+            chat_id=chat_id,
+            reply_markup=paginator.markup,
+            parse_mode=settings.DEFAULT_PARSE_MODE,
+        )
+    else:
+        keyboard = admin_menu_keyboard(content)
+        bot.delete_message(
+            chat_id=chat_id,
+            message_id=message_id,
+        )
+        bot.send_message(
+            text=content.pending_item_list_exception_text,
+            chat_id=chat_id,
+            reply_markup=keyboard,
+            parse_mode=settings.DEFAULT_PARSE_MODE,
+        )
+
+
+def pending_item_approve(bot, chat_id, message_id, pk):
+    _, content = bot_user_change_state(chat_id)
+    message = update_item_status(pk, StatusChoices.CREATED, StatusChoices.PUBLISHED)
+    send_to_channel(bot, message)
+    message, photo, length, page = get_message_photo_length_page(
+        pk - 1,
+        status=StatusChoices.CREATED,
+    )
+    if length > 0:
+        text = f"""ID: {message.id}\n"""
+        text += f"""Description: {message.title}\n"""
+        text += f"""Date: {message.found_date}\n"""
+        text += f"""Location: {message.location}\n"""
+        paginator = pending_item_list_keyboard(
+            content,
+            page_count=length,
+            page=page,
+        )
+        bot.delete_message(
+            chat_id=chat_id,
+            message_id=message_id,
+        )
+        bot.send_photo(
+            photo=photo,
+            caption=text,
+            chat_id=chat_id,
+            reply_markup=paginator.markup,
+            parse_mode=settings.DEFAULT_PARSE_MODE,
+        )
+    else:
+        keyboard = admin_menu_keyboard(content)
+        bot.delete_message(
+            chat_id=chat_id,
+            message_id=message_id,
+        )
+        bot.send_message(
+            text=content.pending_item_list_exception_text,
+            chat_id=chat_id,
+            reply_markup=keyboard,
+            parse_mode=settings.DEFAULT_PARSE_MODE,
+        )
+
+
+def active_item_list(bot, chat_id, message_id=None, pk=None):
+    _, content = bot_user_change_state(chat_id)
+    message, photo, length, page = get_message_photo_length_page(
+        pk,
+        status=StatusChoices.PUBLISHED,
+    )
+    if length > 0:
+        text = f"""ID: {message.id}\n"""
+        text += f"""Description: {message.title}\n"""
+        text += f"""Date: {message.found_date}\n"""
+        text += f"""Location: {message.location}\n"""
+        paginator = active_item_list_keyboard(
+            content,
+            page_count=length,
+            page=page,
+        )
+        if message_id:
+            bot.delete_message(
+                chat_id=chat_id,
+                message_id=message_id,
+            )
+        else:
+            bot.send_message(
+                text=content.active_item_list,
+                chat_id=chat_id,
+                reply_markup=ReplyKeyboardRemove(),
+                parse_mode=settings.DEFAULT_PARSE_MODE,
+            )
+        bot.send_photo(
+            photo=photo,
+            caption=text,
+            chat_id=chat_id,
+            reply_markup=paginator.markup,
+            parse_mode=settings.DEFAULT_PARSE_MODE,
+        )
+    else:
+        keyboard = admin_menu_keyboard(content)
+        bot.send_message(
+            text=content.active_item_list_exception_text,
+            chat_id=chat_id,
+            reply_markup=keyboard,
+            parse_mode=settings.DEFAULT_PARSE_MODE,
+        )
+
+
+def active_item_list_cancel(bot, chat_id, message_id):
+    _, content = bot_user_change_state(chat_id)
+    keyboard = admin_menu_keyboard(content)
+    text = content.active_item_list_cancel
+    bot.delete_message(
+        chat_id=chat_id,
+        message_id=message_id,
+    )
+    bot.send_message(
+        text=text,
+        chat_id=chat_id,
+        reply_markup=keyboard,
+        parse_mode=settings.DEFAULT_PARSE_MODE,
+    )
+
+
+def active_item_taken(bot, chat_id, message_id, pk):
+    _, content = bot_user_change_state(chat_id)
+    update_item_status(pk, StatusChoices.PUBLISHED, StatusChoices.DELIVERED)
+    message, photo, length, page = get_message_photo_length_page(
+        pk - 1,
+        status=StatusChoices.PUBLISHED,
+    )
+    if length > 0:
+        text = f"""ID: {message.id}\n"""
+        text += f"""Description: {message.title}\n"""
+        text += f"""Date: {message.found_date}\n"""
+        text += f"""Location: {message.location}\n"""
+        paginator = pending_item_list_keyboard(
+            content,
+            page_count=length,
+            page=page,
+        )
+        bot.delete_message(
+            chat_id=chat_id,
+            message_id=message_id,
+        )
+        bot.send_photo(
+            photo=photo,
+            caption=text,
+            chat_id=chat_id,
+            reply_markup=paginator.markup,
+            parse_mode=settings.DEFAULT_PARSE_MODE,
+        )
+    else:
+        keyboard = admin_menu_keyboard(content)
+        bot.delete_message(
+            chat_id=chat_id,
+            message_id=message_id,
+        )
+        bot.send_message(
+            text=content.pending_item_list_exception_text,
+            chat_id=chat_id,
+            reply_markup=keyboard,
+            parse_mode=settings.DEFAULT_PARSE_MODE,
+        )
