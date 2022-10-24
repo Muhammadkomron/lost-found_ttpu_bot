@@ -15,7 +15,7 @@ def user_check_credentials(chat_id):
             ]
 
 
-def get_message_photo_length_page(pk=None, status=None):
+def get_message_photo_length_page(pk=None, status=None, chat_id=None):
     if status:
         pk_list = list(
             Item.objects.filter(
@@ -27,7 +27,9 @@ def get_message_photo_length_page(pk=None, status=None):
         )
     else:
         pk_list = list(
-            Item.objects.exclude(
+            Item.objects.filter(
+                user__chat_id=chat_id,
+            ).exclude(
                 status=StatusChoices.BLOCKED,
             ).values_list(
                 "id",

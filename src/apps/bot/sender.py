@@ -513,6 +513,9 @@ def post_item_photo_exception(bot, chat_id):
         chat_id,
         updating_photo=True,
     )
+    keyboard = menu_keyboard(
+        content,
+    )
     bot.send_message(
         text=content.item_photo_exception_text,
         chat_id=chat_id,
@@ -523,7 +526,7 @@ def post_item_photo_exception(bot, chat_id):
 
 def item_list(bot, chat_id, message_id=None, pk=None):
     _, content = bot_user_change_state(chat_id)
-    message, photo, length, page = get_message_photo_length_page(pk)
+    message, photo, length, page = get_message_photo_length_page(pk, chat_id)
     if length > 0:
         if message.status == StatusChoices.CREATED:
             text = f"""{content.item_status_created_text}"""
