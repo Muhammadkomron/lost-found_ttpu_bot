@@ -513,13 +513,9 @@ def post_item_photo_exception(bot, chat_id):
         chat_id,
         updating_photo=True,
     )
-    keyboard = menu_keyboard(
-        content,
-    )
     bot.send_message(
         text=content.item_photo_exception_text,
         chat_id=chat_id,
-        reply_markup=keyboard,
         parse_mode=settings.DEFAULT_PARSE_MODE,
     )
 
