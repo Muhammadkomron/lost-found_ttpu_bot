@@ -63,3 +63,15 @@ def send_to_channel(bot, message):
     )
     obj.message_id = response.message_id
     obj.save()
+
+
+def send_notification(bot, content, user):
+    admins = BotUser.objects.get_admins()
+    text = f"""{content.item_create_notification_text}"""
+    text = text.format(user.username)
+    for admin in admins:
+        bot.send_message(
+            text=text,
+            chat_id=admin.chat_id,
+            parse_mode=settings.DEFAULT_PARSE_MODE,
+        )

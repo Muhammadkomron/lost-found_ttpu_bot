@@ -180,6 +180,10 @@ class BotContent(models.Model):
         blank=True,
         null=True,
     )
+    item_create_notification_text = models.TextField(
+        blank=True,
+        null=True,
+    )
     menu_text = models.TextField(
         blank=True,
         null=True,

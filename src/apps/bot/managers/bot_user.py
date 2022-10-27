@@ -2,6 +2,12 @@ from src.apps.common.managers.common import BaseManager
 
 
 class BotUserManager(BaseManager):
+    def get_admins(self):
+        qs = self.filter(
+            is_admin=True,
+        )
+        return qs
+
     def get_user(self, chat_id):
         obj = self.filter(
             chat_id=chat_id,

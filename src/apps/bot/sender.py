@@ -6,6 +6,7 @@ from src.apps.bot.models.channel import Channel
 from src.apps.bot.helper import (
     get_message_photo_length_page,
     send_to_channel,
+    send_notification,
 )
 from src.apps.bot.services.bot import (
     bot_user_create_or_update,
@@ -495,7 +496,7 @@ def post_item_photo(bot, file_id, chat_id):
     file_info = bot.get_file(file_id)
     file_extension = file_info.file_path.split(".")[-1]
     download_file = bot.download_file(file_info.file_path)
-    _, content = bot_user_post_complete(chat_id, download_file, file_extension)
+    user, content = bot_user_post_complete(chat_id, download_file, file_extension)
     text = content.item_create_success_text
     keyboard = menu_keyboard(
         content,
@@ -506,6 +507,7 @@ def post_item_photo(bot, file_id, chat_id):
         reply_markup=keyboard,
         parse_mode=settings.DEFAULT_PARSE_MODE,
     )
+    send_notification(bot, content, user)
 
 
 def post_item_photo_exception(bot, chat_id):
