@@ -69,7 +69,7 @@ def send_to_channel(bot, message):
 def send_notification(bot, user):
     admins = BotUser.objects.get_admins()
     for admin in admins:
-        content = BotContent.objects.fetch_by_language(admin.language)
+        content = BotContent.objects.fetch_by_language(admin.language_choice)
         text = f"""{content.item_create_notification_text}"""
         text = text.format(user.username)
         bot.send_message(
