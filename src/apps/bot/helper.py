@@ -71,7 +71,7 @@ def send_notification(bot, user):
     for admin in admins:
         content = BotContent.objects.fetch_by_language(admin.language_choice)
         text = f"""{content.item_create_notification_text}"""
-        text = text.format(user.username) if user.username else text.strip("@").format(user.first_name)
+        text = text.format(user.username) if user.username else text.replace("@", "").format(user.first_name)
         bot.send_message(
             text=text,
             chat_id=admin.chat_id,
