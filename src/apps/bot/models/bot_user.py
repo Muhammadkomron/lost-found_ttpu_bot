@@ -25,7 +25,8 @@ class BotUser(BaseModel):
         blank=True,
         null=True,
     )
-    chat_id = models.IntegerField(
+    chat_id = models.CharField(
+        max_length=100,
         blank=True,
         null=True,
     )

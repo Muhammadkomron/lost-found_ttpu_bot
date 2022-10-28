@@ -507,7 +507,10 @@ def post_item_photo(bot, file_id, chat_id):
         reply_markup=keyboard,
         parse_mode=settings.DEFAULT_PARSE_MODE,
     )
-    send_notification(bot, content, user)
+    send_notification(
+        bot,
+        user,
+    )
 
 
 def post_item_photo_exception(bot, chat_id):

@@ -1,5 +1,6 @@
 from django.conf import settings
 
+from src.apps.bot.models.bot_content import BotContent
 from src.apps.bot.models.bot_user import BotUser
 from src.apps.bot.models.channel import Channel
 from src.apps.bot.models.item import Item
@@ -65,11 +66,12 @@ def send_to_channel(bot, message):
     obj.save()
 
 
-def send_notification(bot, content, user):
+def send_notification(bot, user):
     admins = BotUser.objects.get_admins()
-    text = f"""{content.item_create_notification_text}"""
-    text = text.format(user.username)
     for admin in admins:
+        content = BotContent.objects.fetch_by_language(admin.language)
+        text = f"""{content.item_create_notification_text}"""
+        text = text.format(user.username)
         bot.send_message(
             text=text,
             chat_id=admin.chat_id,

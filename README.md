@@ -1,6 +1,6 @@
-![Django project](paste your project git url here)
+![Django project](https://github.com/Muhammadkomron/lost-found_ttpu_bot)
 
-# Default Project
+# Lost&Found TTPU Project
 
 ## Outline
 
@@ -22,12 +22,11 @@ This project has the following prerequisites
 
 ### Development
 
-- Install virtual environment:
+- Clone project:
 
 ```
-git clone your project git url
-cd root folder
-python -m venv --prompt="v" .env
+git clone https://github.com/Muhammadkomron/lost-found_ttpu_bot
+cd lost-found_ttpu_bot
 ```
 
 - If *pre commit* has not been installed please install by running following command:
