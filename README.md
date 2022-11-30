@@ -29,17 +29,34 @@ git clone https://github.com/Muhammadkomron/lost-found_ttpu_bot
 cd lost-found_ttpu_bot
 ```
 
-- If *pre commit* has not been installed please install by running following command:
+- First create or login to https://ngrok.com and copy your token then paste it to *.envs/.local/.ngrok*
 
 ```
-pip install pre-commit
-pre-commmit install
+AUTH_TOKEN="paste your ngrok token here"
 ```
 
-- Type the command below to deploy the project locally:
+- Make sure you have created new test bot in Telegram and pasted into .envs/local/django:
 
 ```
-docker-compose -f local.yaml up -d
+TELEGRAM_BOT_TOKEN="paste your bot token here"
 ```
 
+- Type the command below to run the project locally:
+
+```
+docker-compose -f local.yml up -d
+```
+
+- After you started your local project open new terminal and create superuser to get access to admin panel:
+
+```
+docker-compose -f local.yml run --rm django python manage.py createsuperuser
+```
+
+- Then you should import static written Telegram Bot buttons which located in *src/apps/bot/management/commands/bot_content_credentials.py* later you can edit in admin panel:
+
+```
+docker-compose -f local.yml run --rm django python manage.py import_bot_credentials
+```
+- The last thing you should create is test telegram channel and get *id*
 - You should be good to go now
